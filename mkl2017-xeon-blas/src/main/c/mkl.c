@@ -723,6 +723,30 @@ JNIEXPORT void JNICALL Java_com_intel_analytics_bigdl_mkl_MKL_vdscal
    (*env)->ReleasePrimitiveArrayCritical(env, x, jni_x, 0);
 }
 
+
+JNIEXPORT void JNICALL Java_com_intel_analytics_bigdl_mkl_MKL_float2fp16
+    (JNIEnv * env, jclass cls, jdoubleArray src, jint scrOffset, jbyteArray tgt, jint tgtOffset, jint length) {
+    ptrdiff_t i;
+
+    jdouble * jni_src = (*env)->GetPrimitiveArrayCritical(env, src, JNI_FALSE);
+    jbyte * jni_tgt = (*env)->GetPrimitiveArrayCritical(env, tgt, JNI_FALSE);
+
+    #pragma omp parallel for private(i, jni_tgt, jni_src)
+    for (i = 0; i < length; i++) {
+       union {
+           int integer;
+           float float32;
+       } u;
+       u.float32 = (float)jni_src[i];
+       jint bytes = (jint)u.integer & 0xffff0000;
+       jni_tgt[tgtOffset + i * 2] = (jbyte)(bytes >> 24 & 0xff);
+       jni_tgt[tgtOffset + i * 2 + 1] = (jbyte)(bytes >> 16 & 0xff);
+    }
+
+   (*env)->ReleasePrimitiveArrayCritical(env, src, jni_src, 0);
+   (*env)->ReleasePrimitiveArrayCritical(env, tgt, jni_tgt, 0);
+}
+
 #ifdef __cplusplus
 }
 #endif
