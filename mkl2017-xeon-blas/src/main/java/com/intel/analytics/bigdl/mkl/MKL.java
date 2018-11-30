@@ -294,9 +294,11 @@ public class MKL {
 
     public native static void vdscal(int n, double sa, double[] sx, int offset, int incx);
 
-    public native static void fp162float(int n, double sa, double[] sx, int offset, int incx);
+//    public native static void hfp2dp(byte[] fp16, int fp16Offset, int fp16Length,
+//                                   double[] target, int targetOffset);
 
-    public native static void float2fp16(int n, double sa, double[] sx, int offset, int incx);
+    public native static void dp2hfp(double[] src, int srcOffset, byte[] tgt,
+                                 int tgtOffset, int length);
     /**
      * Get the worker pool size of current JVM thread. Note different JVM thread has separated MKL worker pool.
      * @return
