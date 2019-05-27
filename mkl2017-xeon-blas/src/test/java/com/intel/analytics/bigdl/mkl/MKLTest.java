@@ -19,6 +19,7 @@ package com.intel.analytics.bigdl.mkl;
 import org.junit.After;
 import org.junit.Test;
 
+import static com.intel.analytics.bigdl.mkl.MKL.vsErf;
 import static org.junit.Assert.*;
 
 
@@ -83,6 +84,14 @@ public class MKLTest {
 
         System.setProperty("bigdl.mklWaitPolicy", "error");
         MKL.getMklWaitPolicy();
+    }
+
+    @Test
+    public void erfTest() throws Exception {
+        int n = 10;
+        float[] a = new float[n];
+        float[] y = new float[n];
+        vsErf(n, a, 0, y, 0);
     }
 
 }
